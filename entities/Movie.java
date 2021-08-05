@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 
 @Entity
@@ -32,6 +34,19 @@ public class Movie {
 
   @Column(length = 500, nullable = false)
   private String trailerUrl;
+
+
+  @ManyToOne
+  @JoinColumn(name = "status_id", nullable = false)
+  private Status status;
+
+  public Status getStatus() {
+    return status;
+  }
+
+  public void setStatus(Status status) {
+    this.status = status;
+  }
 
   public int getMovieId() {
     return movieId;
