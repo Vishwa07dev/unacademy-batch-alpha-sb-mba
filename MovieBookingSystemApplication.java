@@ -1,12 +1,6 @@
 package com.vishwa.movieBookingSystem;
 
-import com.vishwa.movieBookingSystem.dao.CityDao;
-import com.vishwa.movieBookingSystem.dao.MovieDao;
-import com.vishwa.movieBookingSystem.dao.TheatreDao;
-import com.vishwa.movieBookingSystem.entities.City;
-import com.vishwa.movieBookingSystem.entities.Movie;
 import com.vishwa.movieBookingSystem.service.InitService;
-import java.time.LocalDateTime;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,13 +16,24 @@ public class MovieBookingSystemApplication {
 
 		System.out.println("Hello Spring Boot !!! ");
 
+
+
+
 	}
 
+	/**
+	 * This is way to execute something in the very begining when application
+	 * is starting up
+	 * @param initService
+	 * @return
+	 */
 	@Bean
-	CommandLineRunner init (InitService initService){
+	CommandLineRunner init(InitService initService){
 		return args -> {
+			System.out.println("This will be executed as soon as the application is started");
 			initService.init();
 		};
 	}
+
 
 }

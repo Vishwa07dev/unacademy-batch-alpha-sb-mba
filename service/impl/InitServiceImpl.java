@@ -1,152 +1,158 @@
 package com.vishwa.movieBookingSystem.service.impl;
 
+import com.vishwa.movieBookingSystem.dao.BookingDao;
 import com.vishwa.movieBookingSystem.dao.CityDao;
-import com.vishwa.movieBookingSystem.dao.LanguageDao;
+import com.vishwa.movieBookingSystem.dao.MovieDao;
+import com.vishwa.movieBookingSystem.dao.MovieTheatreDao;
 import com.vishwa.movieBookingSystem.dao.StatusDao;
+import com.vishwa.movieBookingSystem.dao.TheatreDao;
+import com.vishwa.movieBookingSystem.dao.UserDao;
 import com.vishwa.movieBookingSystem.dao.UserTypeDao;
-import com.vishwa.movieBookingSystem.entities.Booking;
 import com.vishwa.movieBookingSystem.entities.City;
-import com.vishwa.movieBookingSystem.entities.Language;
 import com.vishwa.movieBookingSystem.entities.Movie;
-import com.vishwa.movieBookingSystem.entities.MovieTheatre;
 import com.vishwa.movieBookingSystem.entities.Status;
-import com.vishwa.movieBookingSystem.entities.Theatre;
-import com.vishwa.movieBookingSystem.entities.User;
 import com.vishwa.movieBookingSystem.entities.UserType;
-import com.vishwa.movieBookingSystem.exceptions.MovieDetailsNotFoundException;
-import com.vishwa.movieBookingSystem.exceptions.MovieTheatreDetailsNotFoundException;
-import com.vishwa.movieBookingSystem.exceptions.TheatreDetailsNotFoundException;
-import com.vishwa.movieBookingSystem.exceptions.UserDetailsNotFoundException;
-import com.vishwa.movieBookingSystem.exceptions.UserNameAlreadyExistsException;
-import com.vishwa.movieBookingSystem.exceptions.UserTypeDetailsNotFoundException;
-import com.vishwa.movieBookingSystem.service.BookingService;
+import com.vishwa.movieBookingSystem.service.CityService;
 import com.vishwa.movieBookingSystem.service.InitService;
 import com.vishwa.movieBookingSystem.service.MovieService;
-import com.vishwa.movieBookingSystem.service.MovieTheatreService;
-import com.vishwa.movieBookingSystem.service.TheatreService;
-import com.vishwa.movieBookingSystem.service.UserService;
+import com.vishwa.movieBookingSystem.service.StatusService;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class InitServiceImpl implements InitService {
-  @Autowired
-  CityDao cityDao;
 
   @Autowired
-  UserTypeDao userTypeDao;
+  private CityService cityService ;
 
   @Autowired
-  LanguageDao languageDao;
+  private UserTypeDao userTypeDao ;
 
   @Autowired
-  StatusDao statusDao;
+  private StatusService statusService ;
 
   @Autowired
-  UserService customerService;
+  private MovieService movieService ;
 
   @Autowired
-  TheatreService theatreService;
+  private UserDao userDao ;
 
   @Autowired
-  MovieService movieService;
+  private TheatreDao theatreDao ;
 
   @Autowired
-  MovieTheatreService movieTheatreService;
+  private MovieTheatreDao movieTheatreDao ;
 
   @Autowired
-  BookingService bookingService;
+  private BookingDao bookingDao ;
 
-  List<City> cities = Arrays.asList(new City("Patna"), new City("Mumbai"), new City("Kolkata"), new City("Bangalore"));
-  List<UserType> userTypes = Arrays.asList(new UserType("Customer"), new UserType("Admin"));
-  List<Language> languages = Arrays.asList(new Language("English"), new Language("Hindi"), new Language("Bengali"));
-  List<Status> statuses = Arrays.asList(new Status("Upcoming"), new Status("Released"), new Status("Blocked"));
+  /**
+   * Cooking data
+   *
+   * Define and initialize together
+   *
+   * int i ; -- defining a variable
+   * i=5 ; -- assigning a value
+   *
+   *
+   * int i = 5 ; -- define and assign at the same time
+   */
+  List<Status> statuses = Arrays.asList(new Status("UPCOMING") ,
+      new Status("RELEASED"),new Status("BLOCKED"));
 
-  User customer = new User();
-  Theatre theatre1 = new Theatre();
-  Theatre theatre2 = new Theatre();
-  Movie movie1 = new Movie();
-  Movie movie2 = new Movie();
-  MovieTheatre movieTheatre1 = new MovieTheatre();
-
-  public void addCustomer() throws UserNameAlreadyExistsException, UserTypeDetailsNotFoundException {
-    customer.setFirstName("Emma");
-    customer.setLastName("Stone");
-    customer.setUsername("emma123stone");
-    customer.setPassword("emma@amme");
-    customer.setDateOfBirth(LocalDateTime.of(1988, 11, 6, 0, 0));
-    customer.setUserType(userTypes.get(0));
-    customer.setLanguage(languages.get(0));
-    customer = customerService.acceptUserDetails(customer);
-  }
-
-  public void addTheatres(){
-    theatre1.setTheatreName("Urvashi Cinema");
-    theatre1.setTicketPrice(500);
-    theatre1.setCity(cities.get(0));
-    theatre1 = theatreService.acceptTheatreDetails(theatre1);
-
-    theatre2.setTheatreName("Cinepolis Multiplex");
-    theatre2.setTicketPrice(600);
-    theatre2.setCity(cities.get(1));
-    theatre2 = theatreService.acceptTheatreDetails(theatre2);
-  }
-
-  public void addMovies(){
-    movie1.setMovieName("Avengers: Infinity War");
-    movie1.setMovieDescription("The Avengers must stop Thanos, an intergalactic warlord, " +
-        "from getting his hands on all the infinity stones.");
-    movie1.setReleaseDate(LocalDateTime.of(2018, 4, 27, 5, 30));
-    movie1.setDuration(150);
-    movie1.setCoverPhotoUrl("cover-photo-url");
-    movie1.setTrailerUrl("trailer-url");
-    movie1.setStatus(statuses.get(0));
-    movie1 = movieService.acceptMovieDetails(movie1);
-
-    movie2.setMovieName("Avengers: Endgame");
-    movie2.setMovieDescription("After Thanos, an intergalactic warlord, disintegrates half of " +
-        "the universe, the Avengers must reunite and assemble again to reinvigorate their " +
-        "trounced allies and restore balance.");
-    movie2.setReleaseDate(LocalDateTime.of(2019, 4, 26, 5, 30));
-    movie2.setDuration(180);
-    movie2.setCoverPhotoUrl("cover-photo-url");
-    movie2.setTrailerUrl("trailer-url");
-    movie2.setStatus(statuses.get(1));
-    movie2 = movieService.acceptMovieDetails(movie2);
-  }
-
-  private void addMovieTheatre() throws TheatreDetailsNotFoundException, MovieDetailsNotFoundException {
-
-    movieTheatre1.setMovie(movie1);
-    movieTheatre1.setTheatre(theatre2);
-    movieTheatreService.acceptMovieTheatreDetails(movieTheatre1);
-  }
-
-  private void addBooking() throws UserDetailsNotFoundException, MovieTheatreDetailsNotFoundException {
-    Booking booking = new Booking();
-    booking.setBookingDate(LocalDateTime.of(2019, 1, 8, 0, 10));
-    booking.setUser(customer);
-    booking.setNoOfSeats(150);
-    booking.setMovieTheatre(movieTheatre1);
-    bookingService.acceptBookingDetails(booking);
-  }
 
   @Override
-  public void init() throws UserNameAlreadyExistsException, UserTypeDetailsNotFoundException, TheatreDetailsNotFoundException, MovieDetailsNotFoundException, MovieTheatreDetailsNotFoundException, UserDetailsNotFoundException {
-    cities.forEach(city -> cityDao.save(city));
-    userTypes.forEach(userType -> userTypeDao.save(userType));
-    languages.forEach(language -> languageDao.save(language));
-    statuses.forEach(status -> statusDao.save(status));
-    addCustomer();
-    addTheatres();
-    addMovies();
-    addMovieTheatre();
-    addBooking();
+  public void init() {
+    /**
+     * Write the logic to store date inside the database in different tables
+     */
+
+    /**
+     * Add cities
+     */
+    createCities();
+
+
+    /**
+     * Add User Types
+     */
+
+    createUserTypes();
+
+    /**
+     * Add Statuses
+     */
+    createStatuses();
+
+    /**
+     * Add Movies
+     */
+
+    createMovies();
+
+    /**
+     * Add Users
+     *
+     */
+
+
+    /**
+     * Add theatres
+     */
+
+    /**
+     * MovieTheatres
+     */
+
+    /**
+     * Booking
+     */
+
   }
 
+  private void createMovies() {
+    Movie movie1 = new Movie();
+    movie1.setMovieName("Movie1_Name");
+    movie1.setTrailerUrl("Movie1_T_URL");
+    movie1.setStatus(statuses.get(1));
+    movie1.setMovieDescription("Movie1 description");
+    movie1.setDuration(120);
+    movie1.setTrailerUrl("Movie1_T_URL");
+    movie1.setReleaseDate(LocalDateTime.of(2018,4,27,5,30));
+    movie1.setCoverPhotoUrl("Movie1_C_URL");
+    movieService.acceptMovieDetails(movie1);
+  }
+
+  private void createStatuses() {
+
+    statuses.forEach(status -> {
+      statusService.acceptStatusDetails(status);
+    });
+  }
+
+  private void createUserTypes() {
+    List<UserType> userTypes = new ArrayList<>();
+    userTypes.add(new UserType("Customer"));
+    userTypes.add(new UserType("Admin"));
+
+    userTypes.forEach(userType ->  {
+      userTypeDao.save(userType);
+    });
+  }
+
+  private void createCities() {
+    List<City> cities = new ArrayList<>();
+    cities.add(new City("Patna"));
+    cities.add(new City("Bangalore"));
+    cities.add(new City("Kolkata"));
+    cities.add(new City("Mumbai"));
+
+    cities.forEach(city -> cityService.acceptCityDetails(city));
+  }
 }
