@@ -6,8 +6,10 @@ import com.vishwa.movieBookingSystem.exceptions.UserTypeDetailsNotFoundException
 import com.vishwa.movieBookingSystem.service.UserTypeService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 
+@Service
 public class UserTypeServiceImpl implements UserTypeService {
   @Autowired
   private UserTypeDao userTypeDao;
